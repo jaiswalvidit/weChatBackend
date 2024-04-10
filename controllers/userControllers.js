@@ -67,7 +67,7 @@ const checkUser = async (req, res) => {
 
 const newChat = async (req, res) => {
     try {
-        console.log(req.body);
+        console.log(req.body,'hhhhhhhhhhhhhhhhhhh');
         const  { group, admin,users,isGroupChat} = req.body;
         console.log(isGroupChat)
         if (isGroupChat===true) {
