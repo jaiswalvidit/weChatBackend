@@ -33,7 +33,7 @@ const init = (server) => {
 
     socket.on("new message", (newMessageReceived) => {
       console.log(newMessageReceived);
-      let users = newMessageReceived.messageId.chat.users;
+      let users = newMessageReceived.messageId.users;
       console.log(users);
       users.forEach(user => {
         if (user._id === newMessageReceived.sender._id) return;
