@@ -24,6 +24,7 @@ const init = (server) => {
     });
 
     socket.on("join chat", (room) => {
+      console.log(room);
       socket.join(room);
       console.log(socket.id, "Joined Room:", room);
     });
