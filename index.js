@@ -7,7 +7,7 @@ const socketHandlers = require("./socketHandlers");
 const path = require("path");
 const app = express();
 const server = http.createServer(app);
-const PORT = process.env.PORT || 8001;
+const PORT = process.env.PORT || 8003;
 console.log(PORT)
 console.log(process.env.mongoURL)
 // Middleware
