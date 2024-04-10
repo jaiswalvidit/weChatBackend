@@ -25,7 +25,7 @@ const addUser = async (request, response) => {
     }
 };
 const getUser = async (request, response) => {
-    // console.log('it is called');
+    console.log('it is called');
     try {
         const users = await User.find({});
         // console.log('users are',users);
@@ -106,6 +106,7 @@ const newChat = async (req, res) => {
 const getChat = async (req, res) => {
     try {
         const id=req.body.id;
+        console.log(id,'id is');
         const chat = await Chat.findOne({_id:id}).populate(users);
         if (chat) {
             
