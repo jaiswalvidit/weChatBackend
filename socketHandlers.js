@@ -9,6 +9,7 @@ const init = (server) => {
       origin: "https://wechat-frontend-jet.vercel.app", 
     },
   });
+  
 
   io.on("connection", (socket) => {
     console.log("Connected to socket.io");
