@@ -6,7 +6,7 @@ const init = (server) => {
   const io = socketio(server, {
     pingTimeout: 60000,
     cors: {
-      origin: "http://192.168.198.29:3000", 
+      origin: "https://wechat-frontend-jet.vercel.app", 
     },
   });
 

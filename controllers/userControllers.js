@@ -81,7 +81,7 @@ const newChat = async (req, res) => {
             await newChat.save();
             }
             exist=await  Chat.findOne({group,isGroupChat:true}).populate('users',"name, picture").populate('admin',"name, picture");
-            console.log('group created');
+            // console.log('group created');
             return res.status(200).json({message:'successful',newChat:exist});
         } else {
             let  exist = await Chat.findOne({ users: { $all: users },isGroupChat:false });
@@ -106,7 +106,7 @@ const newChat = async (req, res) => {
 const getChat = async (req, res) => {
     try {
         const id=req.body.id;
-        console.log(id,'id is');
+        // console.log(id,'id is');
         const chat = await Chat.findOne({_id:id}).populate(users);
         if (chat) {
             
@@ -123,12 +123,12 @@ const getChat = async (req, res) => {
     }
 };
 const addMessage = async (req, res) => {
-    console.log(req.body); // Logging the request body to check the received data
+    // console.log(req.body); // Logging the request body to check the received data
     
     try {
         // Creating a new Message instance with the data from the request body
         const newMessage = new Message(req.body);
-        console.log('data is', newMessage); // Logging the new message data
+        // console.log('data is', newMessage); // Logging the new message data
         
         // Saving the new message to the database
         await newMessage.save();
@@ -141,11 +141,11 @@ const addMessage = async (req, res) => {
         ).populate('messages');
         
         
-        console.log('conversation is', conversation); // Logging the updated conversation
+        // console.log('conversation is', conversation); // Logging the updated conversation
         
         // Finding the newly saved message
         const newMess = await Message.findOne({ _id: newMessage._id }).populate('messageId').populate('senderId');
-        console.log(newMess, 'message are as follows'); // Logging the newly saved message
+        // console.log(newMess, 'message are as follows'); // Logging the newly saved message
         
         // Sending response with success message and the newly saved message
         return res.status(200).json({ message: 'Message sent successfully',message:newMess});
