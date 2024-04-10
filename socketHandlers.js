@@ -32,7 +32,9 @@ const init = (server) => {
     socket.on("stop typing", (room) => socket.to(room).emit("stop typing"));
 
     socket.on("new message", (newMessageReceived) => {
-      let users = newMessageReceived.message.chat.users;
+      console.log(newMessageReceived);
+      let users = newMessageReceived.messageId.chat.users;
+      console.log(users);
       users.forEach(user => {
         if (user._id === newMessageReceived.sender._id) return;
         socket.in(user._id).emit("message received", newMessageReceived);
