@@ -37,8 +37,8 @@ const init = (server) => {
       let users = newMessageReceived.messageId.users;
       console.log(users);
       users.forEach(user => {
-        if (user._id === newMessageReceived.sender._id) return;
-        socket.in(user._id).emit("message received", newMessageReceived);
+        if (user === newMessageReceived.senderId._id) return;
+        socket.in(user).emit("message received", newMessageReceived);
       });
     });
 
