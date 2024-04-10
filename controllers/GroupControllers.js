@@ -20,7 +20,7 @@ exports.newGroup = async (req, res) => {
             admin: admin // Assuming admin ID is provided in the request body
         });
 
-        console.log(group, participants, admin);
+        // console.log(group, participants, admin);
 
         // Save the new group to the database
         const savedGroup = await newGroup.save();
@@ -35,7 +35,7 @@ exports.newGroup = async (req, res) => {
 };
 
 exports.getGroup = async (req, res) => {
-    console.log(req.params.id,'info is');
+    // console.log(req.params.id,'info is');
     let string = req.params.id;
     if (string && string[0] === ':') {
         string = string.substring(1);
@@ -54,7 +54,7 @@ exports.getGroup = async (req, res) => {
                 ]
             }
         ]}).populate('admin','name').populate('users','name');
-        console.log('groups are',groups);
+        // console.log('groups are',groups);
         // console.log(groups.length)
 
         if (groups.length==0) {
@@ -76,7 +76,7 @@ exports.specificGroup=async(req,res)=>{
     console.log(req.params.groupId,'info is ');
     let string = req.params.groupId;
     const group=await Chat.findOne({_id:string}).populate('admin').populate('users');
-    console.log(group);
+    // console.log(group);
     if(!group)
     {console.log('group not found');
     return res.status(404).json({ message: 'No groups found' });
@@ -88,13 +88,13 @@ exports.specificGroup=async(req,res)=>{
 
 exports.deleteUsers = async (req, res) => {
    
-    console.log(req.body);
+    // console.log(req.body);
     
 
     try {
         // Find the group by ID and populate admin and participants fields
         const group = await Chat.findOne({_id:req.body.group});
-        console.log('data is',group);
+        // console.log('data is',group);
         // Check if the group exists
         if (!group) {
             return res.status(404).json({ message: 'Group not found' });
@@ -102,7 +102,7 @@ exports.deleteUsers = async (req, res) => {
         console.log('users ',group.users);
         // Remove participants from the group
         group.users = group.users.filter(participant => !req.body.users.includes(String(participant._id)));
-        console.log('user is',group.users);
+        // console.log('user is',group.users);
         // // Save the updated group
         await group.save();
 
