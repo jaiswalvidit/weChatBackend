@@ -43,9 +43,9 @@ const changeUser = async (req, res) => {
     try {
         console.log(req.body); // Log the request body to debug and see what is being passed
         const id = req.body.id; // Extract the user ID from the request body
-        
+        console.log(id);
         // Find the user by ID
-        const exist = await Users.findOne({_id: id});
+        const exist = await Users.findOne({_id: req.body.id});
         console.log(exist);
         if (!exist) {
             // If no user is found, send a 404 error
