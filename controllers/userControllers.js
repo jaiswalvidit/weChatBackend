@@ -57,7 +57,7 @@ const changeUser = async (req, res) => {
         console.log('data',exist);
         // Save the updated user to the database
         await exist.save();
-        
+        return res.status(200).json({message:'successful',user:exist});
         // Send a success response back to the client
         res.send('User updated successfully');
     } catch (error) {
