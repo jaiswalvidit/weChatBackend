@@ -46,7 +46,7 @@ const changeUser = async (req, res) => {
         
         // Find the user by ID
         const exist = await Users.findOne({_id: id});
-        
+        console.log(exist);
         if (!exist) {
             // If no user is found, send a 404 error
             return res.status(404).send('User not found');
@@ -54,7 +54,7 @@ const changeUser = async (req, res) => {
         
         // Update the user's picture
         exist.picture = req.body.picture;
-        
+        console.log('data',exist);
         // Save the updated user to the database
         await exist.save();
         
