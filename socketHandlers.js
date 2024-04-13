@@ -33,7 +33,7 @@ const init = (server) => {
     socket.on("stop typing", (room) => socket.to(room).emit("stop typing"));
 
     socket.on("new message", (newMessageReceived) => {
-      console.log(newMessageReceived);
+      console.log(newMessageReceived,"data is");
       let users = newMessageReceived.messageId.users;
       console.log(users);
       users.forEach(user => {

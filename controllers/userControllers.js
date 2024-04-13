@@ -39,6 +39,34 @@ const getUser = async (request, response) => {
         return response.status(500).json({ error: 'Internal server error' });
     }
 }
+const changeUser = async (req, res) => {
+    try {
+        console.log(req.body); // Log the request body to debug and see what is being passed
+        const id = req.body.id; // Extract the user ID from the request body
+        
+        // Find the user by ID
+        const exist = await Users.findOne({_id: id});
+        
+        if (!exist) {
+            // If no user is found, send a 404 error
+            return res.status(404).send('User not found');
+        }
+        
+        // Update the user's picture
+        exist.picture = req.body.picture;
+        
+        // Save the updated user to the database
+        await exist.save();
+        
+        // Send a success response back to the client
+        res.send('User updated successfully');
+    } catch (error) {
+        // Handle any errors that might occur during the process
+        console.error('Error updating user:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 
 const specificUser = async (request, response) => {
     const { id } = request.params; 
