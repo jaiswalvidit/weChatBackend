@@ -218,4 +218,4 @@ const getMessage = async (req, res) => {
 }
 
 
-module.exports = { addUser, getUser, specificUser, checkUser,newChat,getChat,addMessage,getMessage};
+module.exports = { addUser, getUser, specificUser,changeUser, checkUser,newChat,getChat,addMessage,getMessage};
