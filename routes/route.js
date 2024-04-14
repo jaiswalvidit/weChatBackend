@@ -21,7 +21,7 @@ router.post('/chat/add',newChat);
 router.post('/chat/get',getChat);
 router.post('/message/add', addMessage);
 router.get('/group/add/:id',getGroup);
-router.get('/convo',getConvo);
+router.get('/convo/:id',getConvo);
 router.get('/message/get/:id', getMessage);
 router.get('/group/specific/:groupId', specificGroup);
 router.patch('/group/specific/users',deleteUsers);
