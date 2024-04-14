@@ -42,7 +42,7 @@ exports.getGroup = async (req, res) => {
 
     }
 
-    console.log('string is',string);
+    // console.log('string is',string);
     
     try {
         const groups = await Chat.find({$and: [

@@ -131,6 +131,7 @@ const newChat = async (req, res) => {
     }
 };
 const getConvo = async (req, res) => {
+    console.log(req.params);
     try {
         let userId = req.params.id;
         if (userId.startsWith(':')) {
@@ -141,7 +142,7 @@ const getConvo = async (req, res) => {
 
         const groups = await Chat.find({
             isGroupChat: false,
-            users: { $in: [userId] } // Assuming `userId` is a user ID
+            users: userId// Assuming `userId` is a user ID
         }).populate('users').populate('messages');
         console.log(groups);
         if (groups.length === 0) {
