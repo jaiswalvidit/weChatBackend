@@ -1,5 +1,5 @@
 const express = require('express');
-const { addUser, getUser, specificUser, checkUser, getConversation, addMessage, getMessage, getChat, newChat, changeUser } = require('../controllers/userControllers');
+const { addUser, getUser, specificUser, checkUser, getConversation, addMessage, getMessage, getChat, newChat, changeUser, getConvo } = require('../controllers/userControllers');
 const { uploadImage,getImage } = require('../controllers/FileControllers'); // Import only uploadImage handler
 
 const storage= require('../utils/upload');
@@ -21,6 +21,7 @@ router.post('/chat/add',newChat);
 router.post('/chat/get',getChat);
 router.post('/message/add', addMessage);
 router.get('/group/add/:id',getGroup);
+router.get('/convo',getConvo);
 router.get('/message/get/:id', getMessage);
 router.get('/group/specific/:groupId', specificGroup);
 router.patch('/group/specific/users',deleteUsers);
