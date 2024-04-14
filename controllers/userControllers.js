@@ -130,43 +130,31 @@ const newChat = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
- const getConvo = async (req, res) => {
-    console.log(req.params.id,'info is');
-    let string = req.params.id;
-    if (string && string[0] === ':') {
-        string = string.substring(1);
-
-    }
-
-    console.log('string is',string);
-    
+const getConvo = async (req, res) => {
     try {
-        const groups = await Chat.find({$and: [
-            { isGroupChat: false }, // Find groups that are group chats
-            {
-                $or: [
-                  // Find groups where the provided string is the admin
-                    { users: string } // Find groups where the provided string is a participant
-                ]
-            }
-        ]}).populate('users','name').populate('messages');
-        console.log('groups are',groups);
-        // console.log(groups.length)
-
-        if (groups.length==0) {
-            // No groups found, inform the client
-            return res.status(404).json({ message: 'No groups found' });
+        let string = req.params.id;
+        if (string.startsWith(':')) {
+            string = string.substring(1);
         }
-        
-        // Groups found, send them back to the client
-        return res.status(200).json({ message: 'Groups retrieved successfully', groups: groups });
-        
+
+        console.log('Provided ID:', string);
+
+        const groups = await Chat.find({
+            isGroupChat: false,
+            users: string // Assuming `string` represents a user ID
+        }).populate('users').populate('messages');
+
+        if (groups.length === 0) {
+            return res.status(404).json({ message: 'No conversations found' });
+        }
+
+        return res.status(200).json({ message: 'Conversations retrieved successfully', groups: groups });
     } catch (error) {
-        // Log the error and inform the client
-        console.error('Error fetching groups:', error);
-        return res.status(500).json({ message: 'Server error while fetching groups' });
+        console.error('Error fetching conversations:', error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 const getChat = async (req, res) => {
     try {
         const id=req.body.id;
