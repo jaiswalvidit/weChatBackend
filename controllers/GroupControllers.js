@@ -53,7 +53,7 @@ exports.getGroup = async (req, res) => {
                     { users: string } // Find groups where the provided string is a participant
                 ]
             }
-        ]}).populate('admin','name').populate('users','name');
+        ]}).populate('admin','name').populate('users','name').populate('messages');
         // console.log('groups are',groups);
         // console.log(groups.length)
 

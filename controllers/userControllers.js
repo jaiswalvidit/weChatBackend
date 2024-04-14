@@ -135,7 +135,7 @@ const getChat = async (req, res) => {
     try {
         const id=req.body.id;
         // console.log(id,'id is');
-        const chat = await Chat.findOne({_id:id}).populate(users);
+        const chat = await Chat.findOne({_id:id}).populate(users).populate('messages');
         if (chat) {
             
             return res.status(200).json({ success: true, chat:chat });
