@@ -132,18 +132,18 @@ const newChat = async (req, res) => {
 };
 const getConvo = async (req, res) => {
     try {
-        let string = req.params.id;
-        if (string.startsWith(':')) {
-            string = string.substring(1);
+        let userId = req.params.id;
+        if (userId.startsWith(':')) {
+            userId = userId.substring(1);
         }
 
-        console.log('Provided ID:', string);
+        console.log('Provided User ID:', userId);
 
         const groups = await Chat.find({
             isGroupChat: false,
-            users: string // Assuming `string` represents a user ID
+            users: { $in: [userId] } // Assuming `userId` is a user ID
         }).populate('users').populate('messages');
-
+        console.log(groups);
         if (groups.length === 0) {
             return res.status(404).json({ message: 'No conversations found' });
         }
@@ -154,6 +154,7 @@ const getConvo = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 const getChat = async (req, res) => {
     try {
