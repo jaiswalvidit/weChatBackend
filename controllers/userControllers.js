@@ -131,7 +131,7 @@ const newChat = async (req, res) => {
     }
 };
  const getConvo = async (req, res) => {
-    // console.log(req.params.id,'info is');
+    console.log(req.params.id,'info is');
     let string = req.params.id;
     if (string && string[0] === ':') {
         string = string.substring(1);
@@ -150,7 +150,7 @@ const newChat = async (req, res) => {
                 ]
             }
         ]}).populate('users','name').populate('messages');
-        // console.log('groups are',groups);
+        console.log('groups are',groups);
         // console.log(groups.length)
 
         if (groups.length==0) {
