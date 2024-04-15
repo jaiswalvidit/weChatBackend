@@ -141,8 +141,7 @@ const getConvo = async (req, res) => {
 
         const groups = await Chat.find({
             isGroupChat: false,
-            users: userId,
-            $where: 'this.users.length === 2' // Ensure users array size is 2
+            users: userId
         }).populate('users').populate('messages');
 
         console.log(groups,'group are')
