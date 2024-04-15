@@ -131,7 +131,6 @@ const newChat = async (req, res) => {
     }
 };
 const getConvo = async (req, res) => {
-    console.log(req.params);
     try {
         let userId = req.params.id;
         if (userId.startsWith(':')) {
@@ -142,12 +141,11 @@ const getConvo = async (req, res) => {
 
         const groups = await Chat.find({
             isGroupChat: false,
-            users: userId// Assuming `userId` is a user ID
+            users: userId,
+            $where: 'this.users.length === 2' // Ensure users array size is 2
         }).populate('users').populate('messages');
-        console.log(groups);
-        if (groups.length === 0) {
-            return res.status(404).json({ message: 'No conversations found' });
-        }
+
+      
 
         return res.status(200).json({ message: 'Conversations retrieved successfully', groups: groups });
     } catch (error) {
@@ -155,7 +153,6 @@ const getConvo = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
-
 
 const getChat = async (req, res) => {
     try {
