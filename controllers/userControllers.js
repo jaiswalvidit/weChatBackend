@@ -102,7 +102,8 @@ const newChat = async (req, res) => {
             let exist = await Chat.findOne({group:group,isGroupChat:true});
             if (exist) {
                 console.log("Chat already exists");
-                // return res.status(400).json({ error: "Chat already exists" });
+
+                return res.status(400).json({ error: "Chat already exists" });
             }
             else 
             {let  newChat = await Chat.create(req.body);
@@ -115,7 +116,7 @@ const newChat = async (req, res) => {
             let  exist = await Chat.findOne({ users: { $all: users },isGroupChat:false });
             if (exist) {
                 console.log('Chat exists');
-                // return res.status(400).json({ error: "Chat already exists" });
+                return res.status(400).json({ error: "Chat already exists" });
             }
             else 
             {
