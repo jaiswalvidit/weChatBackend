@@ -145,7 +145,7 @@ const getConvo = async (req, res) => {
             $where: 'this.users.length === 2' // Ensure users array size is 2
         }).populate('users').populate('messages');
 
-      
+        console.log(groups,'group are')
 
         return res.status(200).json({ message: 'Conversations retrieved successfully', groups: groups });
     } catch (error) {
