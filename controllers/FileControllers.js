@@ -1,7 +1,7 @@
 const grid = require('gridfs-stream');
 const mongoose = require('mongoose');
 
-const url = 'http://localhost:8001/api';
+const url = 'https://wechatbackend-qlpp.onrender.com/api';
 
 let gfs, gridfsBucket;
 const conn = mongoose.connection;
