@@ -26,15 +26,24 @@ console.log(request.file,'phots')
 exports.getImage = async (request, response) => {
     console.log(request.params.filename, 'got it');
     try {   
-        const file = await gfs.files.findOne({ filename: request.params.filename });
-        console.log(file);
+        const isPhoto = request.params.filename.endsWith('.jpg') || request.params.filename.endsWith('.png');
+        
+        let file;
+        if (isPhoto) {
+            file = await gfs.photos.findOne({ filename: request.params.filename });
+        } else {
+            file = await gfs.files.findOne({ filename: request.params.filename });
+        }
+
         if (!file) {
             return response.status(404).json({ msg: 'File not found' });
         }
+
         const readStream = gridfsBucket.openDownloadStream(file._id);
         readStream.pipe(response);
     } catch (error) {
         response.status(500).json({ msg: error.message });
     }
 }
+
 
