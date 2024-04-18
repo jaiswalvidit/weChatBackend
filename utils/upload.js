@@ -26,7 +26,7 @@ const storage = new GridFsStorage({
         console.log("Valid file type:", file.mimetype); // Log the valid file type
 
         return {
-            bucketName: "photos",
+           
             filename: `${Date.now()}-blog-${file.originalname}`
         }
     }
