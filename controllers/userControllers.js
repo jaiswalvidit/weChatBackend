@@ -179,7 +179,7 @@ const addMessage = async (req, res) => {
     try {
         // Creating a new Message instance with the data from the request body
         const newMessage = new Message(req.body);
-        // console.log('data is', newMessage); // Logging the new message data
+        console.log('data is', newMessage); // Logging the new message data
         
         // Saving the new message to the database
         await newMessage.save();
@@ -192,7 +192,7 @@ const addMessage = async (req, res) => {
         ).populate('messages');
         
         
-        // console.log('conversation is', conversation); // Logging the updated conversation
+        console.log('conversation is', conversation); // Logging the updated conversation
         
         // Finding the newly saved message
         const newMess = await Message.findOne({ _id: newMessage._id }).populate('messageId').populate('senderId');
