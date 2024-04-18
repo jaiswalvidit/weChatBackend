@@ -25,6 +25,7 @@ console.log(request.file,'phots')
 }
 
 exports.getImage = async (request, response) => {
+    console.log(request.params.filename);
     try {   
         const file = await gfs.files.findOne({ filename: request.params.filename });
         console.log(file);
