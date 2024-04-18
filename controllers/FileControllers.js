@@ -31,7 +31,7 @@ exports.getImage = async (request, response) => {
         // const file1 = await gfs.photos.findOne({ filename: request.params.filename });
         console.log(file,'data');
         // consolr.log(file1,'photo');
-        const readStream = gridfsBucket.openDownloadStream(file._id);
+        const readStream = gridfsBucket.openDownloadStream(file.id);
         readStream.pipe(response);
     } catch (error) {
         response.status(500).json({ msg: error.message });
