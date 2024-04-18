@@ -20,13 +20,14 @@ exports.uploadImage =async (request, response) => {
         return response.status(404).json("File not found");
     
     const imageUrl = `${url}/file/${request.file.filename}`;
-
+    console.log(imageUrl)
     response.status(200).json(imageUrl);    
 }
 
 exports.getImage = async (request, response) => {
     try {   
         const file = await gfs.files.findOne({ filename: request.params.filename });
+        console.log(file);
         // const file1 = await gfs.photos.findOne({ filename: request.params.filename });
         console.log(file,'data');
         // consolr.log(file1,'photo');
