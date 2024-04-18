@@ -194,6 +194,7 @@ const addMessage = async (req, res) => {
         
         console.log('conversation is', conversation); // Logging the updated conversation
         
+        
         // Finding the newly saved message
         const newMess = await Message.findOne({ _id: newMessage._id }).populate('messageId').populate('senderId');
         // console.log(newMess, 'message are as follows'); // Logging the newly saved message
