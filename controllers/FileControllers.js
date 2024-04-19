@@ -20,7 +20,7 @@ console.log(request.file,'phots')
         return response.status(404).json("File not found");
     
     const imageUrl = `${url}/file/${request.file.filename}`;
-    console.log(imageUrl,'pikachu')
+    // console.log(imageUrl,'pikachu')
     response.status(200).json(imageUrl);    
 }
 exports.getImage = async (request, response) => {
@@ -39,7 +39,7 @@ exports.getImage = async (request, response) => {
         }
 
         const readStream = gridfsBucket.openDownloadStream(file._id);
-        console.log(readStream,'called');
+        // console.log(readStream,'called');
         readStream.pipe(response);
     } catch (error) {
         response.status(500).json({ msg: error.message });
