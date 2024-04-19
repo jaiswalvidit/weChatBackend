@@ -38,8 +38,9 @@ const init = (server) => {
     socket.on("new message", (newMessageReceived) => {
       console.log(newMessageReceived,"data is");
       let users = newMessageReceived.messageId.users;
+      console.log(newMessageReceived.messageId.admin,'admin')
       if(newMessageReceived.messageId.admin)
-      users.push(newMessageReceived.admin)
+      users.push(newMessageReceived.messageId.admin)
       console.log(users);
       users.forEach(user => {
         if (user === newMessageReceived.senderId._id) return;
