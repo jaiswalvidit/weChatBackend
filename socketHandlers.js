@@ -23,8 +23,8 @@ const init = (server) => {
       io.emit("active users", activeUsers);
     });
 
-    socket.on("join chat", (room) => {
-      console.log(room);
+    socket.on("join chat",(room) => {
+      console.log(room,'joined');
       socket.join(room);
       console.log(socket.id, "Joined Room:", room);
     });
