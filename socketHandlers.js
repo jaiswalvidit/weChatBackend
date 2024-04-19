@@ -29,12 +29,17 @@ const init = (server) => {
       console.log(socket.id, "Joined Room:", room);
     });
 
-    socket.on("typing", (room) => socket.to(room).emit("typing"));
+    socket.on("typing", (room) =>
+    {
+      console.log('typing',room)
+      return socket.to(room).emit("typing")});
     socket.on("stop typing", (room) => socket.to(room).emit("stop typing"));
 
     socket.on("new message", (newMessageReceived) => {
       console.log(newMessageReceived,"data is");
       let users = newMessageReceived.messageId.users;
+      if(newMessageReceived.messageId.admin)
+      users.push(newMessageReceived.admin)
       console.log(users);
       users.forEach(user => {
         if (user === newMessageReceived.senderId._id) return;
