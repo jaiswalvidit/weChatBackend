@@ -55,11 +55,19 @@ const init = (server) => {
       });
     });
 
-    socket.on('disconnect', () => {
-      activeUsers = activeUsers.filter(u => u !== socket.id);
-      io.emit('activeUsers', activeUsers); // Update all clients
-      console.log('A user disconnected:', socket.id);
+    socket.on("logout", (userId) => {
+      const index = activeUsers.findIndex((user) => user.userId === userId);
+      if (index !== -1) {
+        activeUsers.splice(index, 1);
+        io.emit("activeUsers", activeUsers);
+      }
     });
+
+    // socket.on('disconnect', () => {
+    //   activeUsers = activeUsers.filter(u => u !== socket.id);
+    //   io.emit('activeUsers', activeUsers); // Update all clients
+    //   console.log('A user disconnected:', socket.id);
+    // });
   });
 };
 
