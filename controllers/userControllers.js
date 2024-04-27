@@ -179,7 +179,9 @@ const getChat = async (req, res) => {
 
 const deleteMessage = async (req, res) => {
     try {
+        console.log(req.body,'got it');
         const id = req.body.id;
+
         const exist = await Chat.findById(id); 
         if (exist) {
             await Chat.findByIdAndDelete(id); 
