@@ -175,6 +175,24 @@ const getChat = async (req, res) => {
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
+
+
+const deleteMessage = async (req, res) => {
+    try {
+        const id = req.body.id;
+        const exist = await Chat.findById(id); 
+        if (exist) {
+            await Chat.findByIdAndDelete(id); 
+            res.status(200).json({ message: "Message deleted successfully" });
+        } else {
+            res.status(404).json({ message: "Message not found" });
+        }
+    } catch (error) {
+        console.error("Error deleting message:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 const addMessage = async (req, res) => {
     // console.log(req.body); // Logging the request body to check the received data
     
@@ -244,4 +262,4 @@ const getMessage = async (req, res) => {
 }
 
 
-module.exports = { addUser, getUser, specificUser,getConvo,changeUser, checkUser,newChat,getChat,addMessage,getMessage};
+module.exports = { addUser, getUser, specificUser,getConvo,changeUser,deleteMessage, checkUser,newChat,getChat,addMessage,getMessage};

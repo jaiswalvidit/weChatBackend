@@ -1,5 +1,5 @@
 const express = require('express');
-const { addUser, getUser, specificUser, checkUser, getConversation, addMessage, getMessage, getChat, newChat, changeUser, getConvo } = require('../controllers/userControllers');
+const { addUser, getUser, specificUser, checkUser, getConversation, addMessage, getMessage, getChat, newChat, changeUser, getConvo, deleteMessage } = require('../controllers/userControllers');
 const { uploadImage,getImage } = require('../controllers/FileControllers'); // Import only uploadImage handler
 
 const storage= require('../utils/upload');
@@ -27,7 +27,7 @@ router.get('/group/specific/:groupId', specificGroup);
 router.patch('/group/specific/users',deleteUsers);
 router.patch('/group/specific/add',addUsers);
 router.patch('/group/leave',LeaveGroup);
-
+router.delete('/message/delete',deleteMessage);
 
 router.post('/file/upload', storage.single("file"), uploadImage);
 router.get('/file/:filename',getImage);
