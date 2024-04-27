@@ -179,7 +179,7 @@ const getChat = async (req, res) => {
 
 const deleteMessage = async (req, res) => {
     try {
-        console.log(req.body.messageId.,'got it');
+        console.log(req.body.messageId,'got it');
         const id = req.body.messageId;
         console.log(id,'aaaa');
 
