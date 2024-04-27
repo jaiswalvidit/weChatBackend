@@ -183,10 +183,10 @@ const deleteMessage = async (req, res) => {
         const id = req.body.messageId;
         console.log(id,'aaaa');
 
-        const exist = await Chat.findById(id);
+        const exist = await Message.findById(id);
         console.log(exist); 
         if (exist) {
-            await Chat.findByIdAndDelete(id); 
+            await Message.findByIdAndDelete(id); 
             console.log('deleted');
             res.status(200).json({ message: "Message deleted successfully" });
         } else {
