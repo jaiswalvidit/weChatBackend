@@ -70,9 +70,11 @@ const changeUser = async (req, res) => {
 
 const specificUser = async (request, response) => {
     const { id } = request.params; 
+    console.log(id);
     try {
         const user = await User.findOne({ _id: id }); 
-        return response.status(200).json(user); // Return user as JSON response
+        console.log(user);
+        return response.status(200).json(user); 
     } catch (error) {
         console.error('Error fetching user:', error);
         return response.status(500).json({ error: 'Internal server error' });
