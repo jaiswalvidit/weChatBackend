@@ -179,12 +179,14 @@ const getChat = async (req, res) => {
 
 const deleteMessage = async (req, res) => {
     try {
-        console.log(req.body,'got it');
-        const id = req.body.id;
+        console.log(req.body.messageId.,'got it');
+        const id = req.body.messageId;
 
-        const exist = await Chat.findById(id); 
+        const exist = await Chat.findById(id);
+        console.log(exist); 
         if (exist) {
             await Chat.findByIdAndDelete(id); 
+            console.log('deleted');
             res.status(200).json({ message: "Message deleted successfully" });
         } else {
             res.status(404).json({ message: "Message not found" });
