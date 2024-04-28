@@ -62,11 +62,9 @@ const init = (server) => {
     // Handle call related functionality
     socket.on('call', (data) => {
       console.log('call is made');
-      console.log(data);
-
-      // Here you can handle call initiation logic
-      // For example, emit an event to the recipient(s) to notify them about the call
-      socket.to(data.userId).emit('incoming call', { callerId: socket.id });
+     console.log(data,socket);
+      
+      socket.to(data).emit('incoming call', { callerId: socket.id });
     });
 
     // socket.on('disconnect', () => {
