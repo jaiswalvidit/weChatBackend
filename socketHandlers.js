@@ -64,7 +64,7 @@ const init = (server) => {
       console.log('call is made');
      console.log(data,socket.id);
       
-      socket.to(data).emit('incoming call', { callerId: socket.id });
+      socket.in(data).emit('incoming call', { callerId: socket.id });
     });
 
     // socket.on('disconnect', () => {
