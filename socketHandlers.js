@@ -62,7 +62,7 @@ const init = (server) => {
     // Handle call related functionality
     socket.on('call', (data) => {
       console.log('call is made');
-     console.log(data,socket);
+     console.log(data,socket.id);
       
       socket.to(data).emit('incoming call', { callerId: socket.id });
     });
