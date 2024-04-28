@@ -9,7 +9,6 @@ const init = (server) => {
       origin: "https://wechat-frontend-jet.vercel.app" 
     },
   });
-  
 
   io.on("connection", (socket) => {
     console.log("Connected to socket.io");
@@ -58,6 +57,13 @@ const init = (server) => {
     socket.on("logout", (userId) => {
       activeUsersSet.delete(userId);
       updateActiveUsers(io);
+    });
+
+    // Handle call related functionality
+    socket.on('call', (data) => {
+      // Here you can handle call initiation logic
+      // For example, emit an event to the recipient(s) to notify them about the call
+      socket.to(data.userId).emit('incoming call', { callerId: socket.id });
     });
 
     // socket.on('disconnect', () => {
