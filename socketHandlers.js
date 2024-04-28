@@ -62,10 +62,17 @@ const init = (server) => {
     // Handle call related functionality
     socket.on('call', (data) => {
       console.log('call is made');
-     console.log(data,socket.id);
-      
-      socket.in(data).emit('incoming call', { callerId: socket.id });
+      const users = data.users; // Assuming `data.users` is an array of user objects
+    
+      console.log(data, socket.id);
+    
+      for (let i = 0; i < users.length; i++) {
+        if (users[i]._id !== data._id) {
+          socket.in(users[i]._id).emit('incoming call', { callerId: socket.id });
+        }
+      }
     });
+    
 
     // socket.on('disconnect', () => {
     //   activeUsers = activeUsers.filter(u => u !== socket.id);
