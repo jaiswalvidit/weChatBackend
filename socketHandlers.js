@@ -1,4 +1,3 @@
-// socketHandlers.js
 const socketio = require("socket.io");
 let activeUsersSet = new Set();
 
@@ -6,7 +5,8 @@ const init = (server) => {
   const io = socketio(server, {
     pingTimeout: 60000,
     cors: {
-      origin: "https://wechat-frontend-jet.vercel.app" 
+      origin: "https://wechat-frontend-jet.vercel.app",
+      methods: ["GET", "POST"], // Ensure all needed HTTP methods are allowed
     },
   });
 
@@ -21,33 +21,24 @@ const init = (server) => {
     socket.on("setup", (userData) => {
       activeUsersSet.add(userData._id);
       updateActiveUsers(io);
-      console.log(`${userData._id} user connected`, socket.id);
       socket.join(userData._id);
+      console.log(`${userData._id} user connected`, socket.id);
       socket.emit("connected");
     });
 
-    socket.on("join chat",(room) => {
-      console.log(room,'joined');
+    socket.on("join chat", (room) => {
       socket.join(room);
       console.log(socket.id, "Joined Room:", room);
     });
 
-    socket.on("typing", (room) => {
-      console.log('typing',room)
-      return socket.to(room).emit("typing");
-    });
-    
-    socket.on("stop typing", (room) => {
-      socket.to(room).emit("stop typing");
-    });
+    socket.on("typing", (room) => socket.to(room).emit("typing"));
+    socket.on("stop typing", (room) => socket.to(room).emit("stop typing"));
 
     socket.on("new message", (newMessageReceived) => {
-      console.log(newMessageReceived,"data is");
       let users = newMessageReceived.messageId.users;
-      console.log(newMessageReceived.messageId.admin,'admin')
-      if(newMessageReceived.messageId.admin)
-        users.push(newMessageReceived.messageId.admin)
-      console.log(users);
+      if (newMessageReceived.messageId.admin) {
+        users.push(newMessageReceived.messageId.admin);
+      }
       users.forEach(user => {
         if (user === newMessageReceived.senderId._id) return;
         socket.in(user).emit("message received", newMessageReceived);
@@ -59,32 +50,31 @@ const init = (server) => {
       updateActiveUsers(io);
     });
 
-    // Handle call related functionality
-    socket.on('call', (data) => {
-      console.log('call is made');
-      const users = data.users; // Assuming `data.users` is an array of user objects
-    
-      console.log(data, socket.id);
-    
-      for (let i = 0; i < users.length; i++) {
-        if (users[i]._id !== data._id) {
-          socket.in(users[i]._id).emit('incoming call', { callerId: socket.id });
-        }
-      }
+    // Handling video call signaling
+    socket.on('call user', ({ userId, signal }) => {
+      console.log('Calling user', userId);
+      socket.to(userId).emit('incoming call', { signal, callerId: socket.id });
     });
-    
 
-    // socket.on('disconnect', () => {
-    //   activeUsers = activeUsers.filter(u => u !== socket.id);
-    //   io.emit('activeUsers', activeUsers); // Update all clients
-    //   console.log('A user disconnected:', socket.id);
-    // });
+    socket.on('accept call', ({ signal, callerId }) => {
+      console.log('Call accepted by', callerId);
+      socket.to(callerId).emit('call accepted', { signal });
+    });
+
+    socket.on('end call', ({ userId }) => {
+      socket.to(userId).emit('call ended');
+    });
+
+    // Handling disconnection
+    socket.on('disconnect', () => {
+      console.log('User disconnected:', socket.id);
+      // Cleanup or user status updates can go here
+    });
   });
 };
 
 const updateActiveUsers = (io) => {
-  let activeUsers = [...activeUsersSet];
-  io.emit('activeUsers', activeUsers); // Update all clients
+  io.emit('activeUsers', [...activeUsersSet]); // Update all clients
 };
 
 module.exports = { init };
