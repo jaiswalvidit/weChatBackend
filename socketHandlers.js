@@ -53,11 +53,12 @@ const init = (server) => {
     // Handling video call signaling
     socket.on('call user', ({ userId, signal }) => {
       console.log('Calling user', userId);
-      socket.to(userId).emit('incoming call', { signal, callerId: socket.id });
+      socket.in(userId).emit('incoming call', { signal, callerId: socket.id });
     });
 
     socket.on('accept call', ({ signal, callerId }) => {
       console.log('Call accepted by', callerId);
+      console.log('signal',signal);
       socket.to(callerId).emit('call accepted', { signal });
     });
 
