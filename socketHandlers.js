@@ -1,6 +1,7 @@
 const socketio = require("socket.io");
 let activeUsersSet = new Set();
 
+const roomMembers = {};
 const init = (server) => {
   const io = socketio(server, {
     pingTimeout: 60000,
@@ -26,12 +27,22 @@ const init = (server) => {
       socket.emit("connected");
     });
 
-    socket.on("join chat", (room) => {
+    socket.on('join room', (room) => {
       socket.join(room);
-      console.log(socket.id, "Joined Room:", room);
-    });
+      // Add user to room tracking
+      if (!roomMembers[room]) {
+          roomMembers[room] = new Set();
+      }
+      roomMembers[room].add(socket.id);
 
-    socket.on("typing", (room) => socket.to(room).emit("typing"));
+      // Notify everyone in the room about the new user list
+      io.to(room).emit('members list', Array.from(roomMembers[room]));
+  });
+
+  socket.on('typing', (room) => {
+    console.log('User typing in room:', room);
+    socket.to(room).emit('typing');
+});
     socket.on("stop typing", (room) => socket.to(room).emit("stop typing"));
 
     socket.on("new message", (newMessageReceived) => {
