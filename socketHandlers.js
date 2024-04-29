@@ -6,7 +6,7 @@ const init = (server) => {
     pingTimeout: 60000,
     cors: {
       origin: "https://wechat-frontend-jet.vercel.app",
-      methods: ["GET", "POST"], // Ensure all needed HTTP methods are allowed
+      methods: ["GET", "POST"],
     },
   });
 
@@ -51,15 +51,15 @@ const init = (server) => {
     });
 
     // Handling video call signaling
-    socket.on('call user', ({ userId, signal }) => {
+    socket.on('call user', ({ userId, signal, selectedChat }) => {
       console.log('Calling user', userId);
-      console.log('signal',signal);
-      socket.in(userId).emit('incoming call', { signal, callerId: socket.id });
+      console.log('signal', signal);
+      socket.to(userId).emit('incoming call', { signal, callerId: socket.id, details:selectedChat });
     });
 
     socket.on('accept call', ({ signal, callerId }) => {
       console.log('Call accepted by', callerId);
-      console.log('signal',signal);
+      console.log('signal', signal);
       socket.to(callerId).emit('call accepted', { signal });
     });
 
