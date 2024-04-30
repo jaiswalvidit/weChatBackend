@@ -37,14 +37,14 @@ const init = (server) => {
 
     socket.on("typing", (group, userId) => {
       console.log('groups',group.users);
-      const users = group.users; // Clone to prevent mutation
+      const users = group.users; 
      
       if (group.admin) {
-        users.push(group.admin);
+        users.push(group.admin._id);
       }
       console.log('users',users);
       users.forEach(user => {
-        if (user !== userId) {
+        if (user._id !== userId) {
           io.to(user).emit("typing", userId);
         }
       });
