@@ -38,6 +38,7 @@ const init = (server) => {
     socket.on("typing", (group, userId) => {
       console.log('groups',group);
       console.log('users',group.group.users);
+      const list=group.userId;
       const users = group.group.users; 
      
       if (group.admin) {
@@ -47,7 +48,8 @@ const init = (server) => {
 
       users.forEach(user => {
         if (user._id !== group.userId) {
-          io.to(user._id).emit("typing", { message: group.userId });
+          console.log(list);
+          io.to(user._id).emit("typing",list);
 
         }
       });
