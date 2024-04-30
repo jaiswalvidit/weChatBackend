@@ -61,8 +61,8 @@ const init = (server) => {
       const list=group.userId;
       const users = group.group.users; 
      
-      if (group.admin) {
-        users.push(group.admin);
+      if (group.group.admin) {
+        users.push(group.group.admin);
       }
       console.log('users',users);
 
