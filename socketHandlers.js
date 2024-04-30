@@ -15,12 +15,14 @@ const init = (server) => {
 
     socket.on('login', (userId) => {
       activeUsersMap.set(userId, socket.id);
+      console.log(userId,'connected');
+      console.log('connected');
       updateActiveUsers(io);
     });
 
     socket.on("setup", (userData) => {
-      activeUsersMap.set(userData._id, socket.id);
-      updateActiveUsers(io);
+      // activeUsersMap.set(userData._id, socket.id);
+      // updateActiveUsers(io);
       socket.join(userData._id);  // userData._id is used as a room id here
       console.log(`${userData._id} user connected`, socket.id);
       socket.emit("connected");
@@ -28,11 +30,14 @@ const init = (server) => {
 
     socket.on("join chat", (room) => {
       socket.join(room);
+      // RoomMembers.join()
       console.log(`${socket.id} joined room: ${room}`);
+    
     });
 
     socket.on("typing", (group, userId) => {
       const users = [...group.users]; // Clone to prevent mutation
+      console.log('users',users);
       if (group.admin) {
         users.push(group.admin);
       }
