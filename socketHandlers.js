@@ -1,7 +1,5 @@
 const socketio = require("socket.io");
-
 let activeUsersMap = new Map();
-const userToSocket = new Map();
 
 const init = (server) => {
   const io = socketio(server, {
@@ -17,122 +15,118 @@ const init = (server) => {
 
     socket.on('login', (userId) => {
       activeUsersMap.set(userId, socket.id);
-      console.log(`${userId} connected`);
+      console.log(userId,'connected');
+      console.log('connected');
       updateActiveUsers(io);
     });
 
     socket.on("setup", (userData) => {
-      socket.join(userData._id);
+      // activeUsersMap.set(userData._id, socket.id);
+      // updateActiveUsers(io);
+      socket.join(userData._id);  // userData._id is used as a room id here
       console.log(`${userData._id} user connected`, socket.id);
       socket.emit("connected");
     });
 
+    socket.on("join chat", (room) => {
+      socket.join(room);
+      // RoomMembers.join()
+      console.log(`${socket.id} joined room: ${room}`);
+    
+    });
+
     socket.on("typing", (group, userId) => {
-      broadcastTyping(io, group, userId);
+      console.log('groups',group);
+      console.log('users',group.group.users);
+      const list=group.userId;
+      const users = group.group.users; 
+     
+      if (group.group.admin) {
+        users.push(group.group.admin);
+      }
+      console.log('users',users);
+
+      users.forEach(user => {
+        if (user.name !== group.userId) {
+          console.log(list);
+          io.to(user._id).emit("typing",list);
+
+        }
+      });
     });
 
     socket.on("stop typing", (group, userId) => {
-      broadcastStopTyping(io, group, userId);
-    });
+      console.log('groups',group);
+      console.log('users',group.group.users);
+      const list=group.userId;
+      const users = group.group.users; 
+     
+      if (group.group.admin) {
 
-    socket.on("call-user", (data) => {
-      handleCallUser(io, socket, data);
-    });
+        users.push(group.group.admin);
+      }
+      console.log('users',users);
 
-    socket.on("call-accepted", (data) => {
-      handleCallAccepted(io, socket, data);
+      users.forEach(user => {
+        if (user.name !== group.userId) {
+          console.log(list);
+          io.to(user._id).emit("stop typing",list);
+
+        }
+      });
     });
 
     socket.on("new message", (newMessageReceived) => {
-      handleNewMessage(io, newMessageReceived);
+      let users = [...newMessageReceived.messageId.users]; // Clone to prevent mutation
+      if (newMessageReceived.messageId.admin) {
+        users.push(newMessageReceived.messageId.admin);
+      }
+      users.forEach(user => {
+        if (user !== newMessageReceived.senderId._id) {
+          io.to(user).emit("message received", newMessageReceived);
+        }
+      });
     });
 
     socket.on("logout", (userId) => {
-      handleLogout(io, userId);
+      activeUsersMap.delete(userId);
+      updateActiveUsers(io);
+    });
+
+    socket.on('call user', ({ userId, signal, selectedChat }) => {
+      const callerSocketId = activeUsersMap.get(userId);
+      if (callerSocketId) {
+        io.to(callerSocketId).emit('incoming call', { signal, callerId: socket.id, details: selectedChat });
+      }
+    });
+
+    socket.on('accept call', ({ signal, callerId }) => {
+      io.to(callerId).emit('call accepted', { signal });
+    });
+
+    socket.on('end call', ({ userId }) => {
+      const userSocketId = activeUsersMap.get(userId);
+      if (userSocketId) {
+        io.to(userSocketId).emit('call ended');
+      }
     });
 
     socket.on('disconnect', () => {
-      handleDisconnect(io, socket.id);
+      // Remove user from active users map based on socket ID
+      for (let [userId, socketId] of activeUsersMap.entries()) {
+        if (socketId === socket.id) {
+          activeUsersMap.delete(userId);
+          updateActiveUsers(io);
+          break;
+        }
+      }
+      console.log('User disconnected:', socket.id);
     });
   });
 };
 
 const updateActiveUsers = (io) => {
-  io.emit('activeUsers', Array.from(activeUsersMap.keys())); // Emit user IDs
-};
-
-const broadcastTyping = (io, group, userId) => {
-  const { users, admin } = group;
-  const list = userId;
-  if (admin) {
-    users.push(admin);
-  }
-  users.forEach(user => {
-    if (user._id !== userId) {
-      io.to(user._id).emit("typing", list);
-    }
-  });
-};
-
-const broadcastStopTyping = (io, group, userId) => {
-  const { users, admin } = group;
-  const list = userId;
-  if (admin) {
-    users.push(admin);
-  }
-  users.forEach(user => {
-    if (user._id !== userId) {
-      io.to(user._id).emit("stop typing", list);
-    }
-  });
-};
-
-const handleCallUser = (io, socket, data) => {
-  const { emailId, offer } = data;
-  const callerId = userToSocket.get(socket.id);
-  const receiverId = activeUsersMap.get(emailId);
-  if (receiverId) {
-    io.to(receiverId).emit('incoming call', { from: callerId, offer });
-  }
-};
-
-const handleCallAccepted = (io, socket, data) => {
-  const { emailId, ans } = data;
-  const callerId = userToSocket.get(socket.id);
-  const receiverId = activeUsersMap.get(emailId);
-  if (receiverId) {
-    io.to(receiverId).emit('call-accepted', { from: callerId, ans });
-  }
-};
-
-const handleNewMessage = (io, newMessageReceived) => {
-  const { messageId, senderId } = newMessageReceived;
-  let users = [...messageId.users];
-  if (messageId.admin) {
-    users.push(messageId.admin);
-  }
-  users.forEach(user => {
-    if (user !== senderId._id) {
-      io.to(user).emit("message received", newMessageReceived);
-    }
-  });
-};
-
-const handleLogout = (io, userId) => {
-  activeUsersMap.delete(userId);
-  updateActiveUsers(io);
-};
-
-const handleDisconnect = (io, socketId) => {
-  // Remove user from activeUsersMap based on socket ID
-  for (const [userId, userSocketId] of activeUsersMap.entries()) {
-    if (userSocketId === socketId) {
-      activeUsersMap.delete(userId);
-      updateActiveUsers(io);
-      break;
-    }
-  }
-  console.log('User disconnected:', socketId);
+  io.emit('activeUsers', Array.from(activeUsersMap.keys())); // Only send user IDs
 };
 
 module.exports = { init };
