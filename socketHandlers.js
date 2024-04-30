@@ -56,7 +56,23 @@ const init = (server) => {
     });
 
     socket.on("stop typing", (room) => {
-      io.to(room).emit("stop typing");
+      console.log('groups',group);
+      console.log('users',group.group.users);
+      const list=group.userId;
+      const users = group.group.users; 
+     
+      if (group.admin) {
+        users.push(group.admin);
+      }
+      console.log('users',users);
+
+      users.forEach(user => {
+        if (user._id !== group.userId) {
+          console.log(list);
+          io.to(user._id).emit("typing",list);
+
+        }
+      });
     });
 
     socket.on("new message", (newMessageReceived) => {
