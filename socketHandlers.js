@@ -36,7 +36,8 @@ const init = (server) => {
     });
 
     socket.on("typing", (group, userId) => {
-      const users = [...group.users]; // Clone to prevent mutation
+      console.log('groups',group);
+      const users = group.users; // Clone to prevent mutation
       console.log('users',users);
       if (group.admin) {
         users.push(group.admin);
