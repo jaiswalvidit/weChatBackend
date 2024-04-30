@@ -47,7 +47,7 @@ const init = (server) => {
       console.log('users',users);
 
       users.forEach(user => {
-        if (user._id !== group.userId) {
+        if (user.name !== group.userId) {
           console.log(list);
           io.to(user._id).emit("typing",list);
 
@@ -62,12 +62,13 @@ const init = (server) => {
       const users = group.group.users; 
      
       if (group.group.admin) {
+
         users.push(group.group.admin);
       }
       console.log('users',users);
 
       users.forEach(user => {
-        if (user._id !== group.userId) {
+        if (user.name !== group.userId) {
           console.log(list);
           io.to(user._id).emit("stop typing",list);
 
