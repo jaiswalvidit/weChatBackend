@@ -38,17 +38,17 @@ const init = (server) => {
     socket.on("typing", (group, userId) => {
       console.log('groups',group);
       console.log('users',group.group.users);
-      // const users = group.group.users; 
+      const users = group.group.users; 
      
-      // if (group.admin) {
-      //   users.push(group.admin._id);
-      // }
-      // console.log('users',users);
-      // users.forEach(user => {
-      //   if (user._id !== userId) {
-      //     io.to(user).emit("typing", userId);
-        // }
-      // });
+      if (group.admin) {
+        users.push(group.admin);
+      }
+      console.log('users',users);
+      users.forEach(user => {
+        if (user._id !== userId) {
+          io.to(user).emit("typing", userId);
+        }
+      });
     });
 
     socket.on("stop typing", (room) => {
