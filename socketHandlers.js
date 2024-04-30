@@ -37,8 +37,8 @@ const init = (server) => {
 
     socket.on("typing", (group, userId) => {
       console.log('groups',group);
-      console.log('users',group.users);
-      // const users = group.users; 
+      console.log('users',group.group,users);
+      // const users = group.group.users; 
      
       // if (group.admin) {
       //   users.push(group.admin._id);
