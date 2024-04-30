@@ -44,9 +44,11 @@ const init = (server) => {
         users.push(group.admin);
       }
       console.log('users',users);
+
       users.forEach(user => {
-        if (user._id !== userId) {
-          io.to(user._id).emit("typing", group.userId);
+        if (user._id !== group.userId) {
+          io.to(user._id).emit("typing", { message: group.userId });
+
         }
       });
     });
