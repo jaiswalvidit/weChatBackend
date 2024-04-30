@@ -55,7 +55,7 @@ const init = (server) => {
       });
     });
 
-    socket.on("stop typing", (room) => {
+    socket.on("stop typing", (group, userId) => {
       console.log('groups',group);
       console.log('users',group.group.users);
       const list=group.userId;
@@ -69,7 +69,7 @@ const init = (server) => {
       users.forEach(user => {
         if (user._id !== group.userId) {
           console.log(list);
-          io.to(user._id).emit("typing",list);
+          io.to(user._id).emit("stop typing",list);
 
         }
       });
