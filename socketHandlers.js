@@ -36,12 +36,13 @@ const init = (server) => {
     });
 
     socket.on("typing", (group, userId) => {
-      console.log('groups',group);
+      console.log('groups',group.users);
       const users = group.users; // Clone to prevent mutation
-      console.log('users',users);
+     
       if (group.admin) {
         users.push(group.admin);
       }
+      console.log('users',users);
       users.forEach(user => {
         if (user !== userId) {
           io.to(user).emit("typing", userId);
