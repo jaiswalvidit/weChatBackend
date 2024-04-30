@@ -1,5 +1,5 @@
 const socketio = require("socket.io");
-let activeUsersSet = new Set();
+let activeUsersMap = new Map();
 
 const init = (server) => {
   const io = socketio(server, {
@@ -11,83 +11,93 @@ const init = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("Connected to socket.io");
+    console.log("Connected to socket.io", "Socket ID:", socket.id);
 
     socket.on('login', (userId) => {
-      activeUsersSet.add(userId);
+      activeUsersMap.set(userId, socket.id);
       updateActiveUsers(io);
     });
 
     socket.on("setup", (userData) => {
-      activeUsersSet.add(userData._id);
+      activeUsersMap.set(userData._id, socket.id);
       updateActiveUsers(io);
-      socket.join(userData._id);
+      socket.join(userData._id);  // userData._id is used as a room id here
       console.log(`${userData._id} user connected`, socket.id);
       socket.emit("connected");
     });
 
     socket.on("join chat", (room) => {
       socket.join(room);
-      console.log(socket.id, "Joined Room:", room);
+      console.log(`${socket.id} joined room: ${room}`);
     });
 
     socket.on("typing", (group, userId) => {
-      console.log(group);
-      const users = group.users;
+      const users = [...group.users]; // Clone to prevent mutation
       if (group.admin) {
         users.push(group.admin);
       }
       users.forEach(user => {
-        if (user === userId) return;
-        io.to(user).emit("typing", userId);
+        if (user !== userId) {
+          io.to(user).emit("typing", userId);
+        }
       });
     });
 
-    socket.on("stop typing", (room) => socket.to(room).emit("stop typing"));
+    socket.on("stop typing", (room) => {
+      io.to(room).emit("stop typing");
+    });
 
     socket.on("new message", (newMessageReceived) => {
-      let users = newMessageReceived.messageId.users;
+      let users = [...newMessageReceived.messageId.users]; // Clone to prevent mutation
       if (newMessageReceived.messageId.admin) {
         users.push(newMessageReceived.messageId.admin);
       }
       users.forEach(user => {
-        if (user === newMessageReceived.senderId._id) return;
-        socket.in(user).emit("message received", newMessageReceived);
+        if (user !== newMessageReceived.senderId._id) {
+          io.to(user).emit("message received", newMessageReceived);
+        }
       });
     });
 
     socket.on("logout", (userId) => {
-      activeUsersSet.delete(userId);
+      activeUsersMap.delete(userId);
       updateActiveUsers(io);
     });
 
-    // Handling video call signaling
     socket.on('call user', ({ userId, signal, selectedChat }) => {
-      console.log('Calling user', userId);
-      console.log('signal', signal);
-      socket.to(userId).emit('incoming call', { signal, callerId: socket.id, details: selectedChat });
+      const callerSocketId = activeUsersMap.get(userId);
+      if (callerSocketId) {
+        io.to(callerSocketId).emit('incoming call', { signal, callerId: socket.id, details: selectedChat });
+      }
     });
 
     socket.on('accept call', ({ signal, callerId }) => {
-      console.log('Call accepted by', callerId);
-      console.log('signal', signal);
-      socket.to(callerId).emit('call accepted', { signal });
+      io.to(callerId).emit('call accepted', { signal });
     });
 
     socket.on('end call', ({ userId }) => {
-      socket.to(userId).emit('call ended');
+      const userSocketId = activeUsersMap.get(userId);
+      if (userSocketId) {
+        io.to(userSocketId).emit('call ended');
+      }
     });
 
-    // Handling disconnection
     socket.on('disconnect', () => {
+      // Remove user from active users map based on socket ID
+      for (let [userId, socketId] of activeUsersMap.entries()) {
+        if (socketId === socket.id) {
+          activeUsersMap.delete(userId);
+          updateActiveUsers(io);
+          break;
+        }
+      }
       console.log('User disconnected:', socket.id);
-      // Cleanup or user status updates can go here
     });
   });
 };
 
 const updateActiveUsers = (io) => {
-  io.emit('activeUsers', [...activeUsersSet]); // Update all clients
+  io.emit('activeUsers', Array.from(activeUsersMap.keys())); // Only send user IDs
 };
 
 module.exports = { init };
