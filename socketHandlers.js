@@ -46,7 +46,7 @@ const init = (server) => {
       console.log('users',users);
       users.forEach(user => {
         if (user._id !== userId) {
-          io.to(user).emit("typing", userId);
+          io.to(user._id).emit("typing", userId);
         }
       });
     });
