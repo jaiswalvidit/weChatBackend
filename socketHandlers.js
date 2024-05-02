@@ -83,8 +83,8 @@ const init = (server) => {
       }
       console.log(users);
       users.forEach(user => {
-        if (user !== newMessageReceived.senderId._id) {
-          io.to(user).emit("message received", newMessageReceived);
+        if (user._id !== newMessageReceived.senderId._id) {
+          io.to(user._id).emit("message received", newMessageReceived);
         }
       });
     });
