@@ -81,6 +81,7 @@ const init = (server) => {
       if (newMessageReceived.messageId.admin) {
         users.push(newMessageReceived.messageId.admin);
       }
+      console.log(users);
       users.forEach(user => {
         if (user !== newMessageReceived.senderId._id) {
           io.to(user).emit("message received", newMessageReceived);
