@@ -41,12 +41,12 @@ const getUser = async (request, response) => {
 }
 const changeUser = async (req, res) => {
     try {
-        console.log(req.body); // Log the request body to debug and see what is being passed
+        // console.log(req.body); // Log the request body to debug and see what is being passed
         const id = req.body.id; // Extract the user ID from the request body
-        console.log(id);
+        // console.log(id);
         // Find the user by ID
         const exist = await User.findOne({_id: req.body.id});
-        console.log(exist);
+        // console.log(exist);
         if (!exist) {
             // If no user is found, send a 404 error
             return res.status(404).send('User not found');
@@ -54,7 +54,7 @@ const changeUser = async (req, res) => {
         
         // Update the user's picture
         exist.picture = req.body.picture;
-        console.log('data',exist);
+        // console.log('data',exist);
         // Save the updated user to the database
         await exist.save();
         return res.status(200).json({message:'successful',user:exist});
@@ -70,10 +70,10 @@ const changeUser = async (req, res) => {
 
 const specificUser = async (request, response) => {
     const { id } = request.params; 
-    console.log(id);
+    // console.log(id);
     try {
         const user = await User.findOne({ _id: id }); 
-        console.log(user);
+        // console.log(user);
         return response.status(200).json(user); 
     } catch (error) {
         console.error('Error fetching user:', error);
@@ -97,7 +97,7 @@ const checkUser = async (req, res) => {
 
 const newChat = async (req, res) => {
     try {
-        console.log(req.body,'hhhhhhhhhhhhhhhhhhh');
+        // console.log(req.body,'hhhhhhhhhhhhhhhhhhh');
         const  { group, admin,users,isGroupChat} = req.body;
         console.log(isGroupChat)
         if (isGroupChat===true) {
@@ -117,7 +117,7 @@ const newChat = async (req, res) => {
         } else {
             let  exist = await Chat.findOne({ users: { $all: users },isGroupChat:false });
             if (exist) {
-                console.log('Chat exists');
+                // console.log('Chat exists');
                 return res.status(400).json({ error: "Chat already exists" });
             }
             else 
@@ -140,14 +140,14 @@ const getConvo = async (req, res) => {
             userId = userId.substring(1);
         }
 
-        console.log('Provided User ID:', userId);
+        // console.log('Provided User ID:', userId);
 
         const groups = await Chat.find({
             isGroupChat: false,
             users: userId
         }).populate('users').populate('messages');
 
-        console.log(groups,'group are')
+        // console.log(groups,'group are')
 
         return res.status(200).json({ message: 'Conversations retrieved successfully', groups: groups });
     } catch (error) {
@@ -179,9 +179,9 @@ const getChat = async (req, res) => {
 
 const deleteMessage = async (req, res) => {
     try {
-        console.log(req.body.messageId,'got it');
+        // console.log(req.body.messageId,'got it');
         const id = req.body.messageId;
-        console.log(id,'aaaa');
+        // console.log(id,'aaaa');
 
         const exist = await Message.findById(id);
         console.log(exist); 
@@ -204,7 +204,7 @@ const addMessage = async (req, res) => {
     try {
         // Creating a new Message instance with the data from the request body
         const newMessage = new Message(req.body);
-        console.log('data is', newMessage); // Logging the new message data
+        // console.log('data is', newMessage); // Logging the new message data
         
         // Saving the new message to the database
         await newMessage.save();
@@ -217,7 +217,7 @@ const addMessage = async (req, res) => {
         ).populate('messages');
         
         
-        console.log('conversation is', conversation); // Logging the updated conversation
+        // console.log('conversation is', conversation); // Logging the updated conversation
         
         
         // Finding the newly saved message

@@ -77,12 +77,12 @@ const init = (server) => {
     });
 
     socket.on("new message", (newMessageReceived) => {
-      console.log(newMessageReceived);
+      console.log(newMessageReceived,'called');
       let users = [...newMessageReceived.messageId.users]; // Clone to prevent mutation
       if (newMessageReceived.messageId.admin) {
         users.push(newMessageReceived.messageId.admin);
       }
-      console.log(users);
+      console.log(users,'list');
       users.forEach(user => {
         if (user._id !== newMessageReceived.senderId._id) {
           io.to(user._id).emit("message received", newMessageReceived);
