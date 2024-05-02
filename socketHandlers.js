@@ -36,19 +36,19 @@ const init = (server) => {
     });
 
     socket.on("typing", (group, userId) => {
-      console.log('groups',group);
-      console.log('users',group.group.users);
+      // console.log('groups',group);
+      // console.log('users',group.group.users);
       const list=group.userId;
       const users = group.group.users; 
      
       if (group.group.admin) {
         users.push(group.group.admin);
       }
-      console.log('users',users);
+      // console.log('users',users);
 
       users.forEach(user => {
         if (user.name !== group.userId) {
-          console.log(list);
+          // console.log(list);
           io.to(user._id).emit("typing",list);
 
         }
@@ -56,8 +56,8 @@ const init = (server) => {
     });
 
     socket.on("stop typing", (group, userId) => {
-      console.log('groups',group);
-      console.log('users',group.group.users);
+      // console.log('groups',group);
+      // console.log('users',group.group.users);
       const list=group.userId;
       const users = group.group.users; 
      
@@ -65,11 +65,11 @@ const init = (server) => {
 
         users.push(group.group.admin);
       }
-      console.log('users',users);
+      // console.log('users',users);
 
       users.forEach(user => {
         if (user.name !== group.userId) {
-          console.log(list);
+          // console.log(list);
           io.to(user._id).emit("stop typing",list);
 
         }
@@ -77,6 +77,7 @@ const init = (server) => {
     });
 
     socket.on("new message", (newMessageReceived) => {
+      console.log(newMessageReceived);
       let users = [...newMessageReceived.messageId.users]; // Clone to prevent mutation
       if (newMessageReceived.messageId.admin) {
         users.push(newMessageReceived.messageId.admin);
